@@ -43,10 +43,6 @@ resourceDB.once('open', function () {
 		res.render('calendar', {title: 'Calendar'})
 	});
 
-	router.get('/chat', function (req, res) {
-		res.render('chat', {title: 'Chat'})
-	});
-
 	router.post('/register', function (req, res) {
 
 		var validEmail = req.body.email;
@@ -60,30 +56,29 @@ resourceDB.once('open', function () {
 		}
 
 		else {
-			Account.register(
-				new Account({ 
+			Account.register(new Account({ 
 					name : req.body.name,
 					email : req.body.email,
 					username : req.body.username,
 					institution : req.body
 				}),
-				req.body.password, function (err, account) {
+				req.body.password,
+        function (err, account) {
 					if (err) {
 						return res.render('error', { 
 							message: 'Account already exists. Try logging in.' 
 						});
 					}
 
-					passport.authenticate('local')(req, res, function () {
-						res.redirect('/');
-					});
-			});
+          res.redirect('/');
+        }
+      );
 		}
 	});
 
-	router.post('/login', passport.authenticate('local'), function (req, res) {
-		res.redirect('/');
-	});
+	router.post('/login', passport.authenticate('local'), function(req, res) {
+    res.redirect('/profile');
+  });
 
 	router.get('/logout', function (req, res) {
 		req.logout();

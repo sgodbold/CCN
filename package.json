@@ -25,6 +25,7 @@
     "gridfs-stream": "*",
     "express-method-override": "*",
     "multipart": "*",
-    "connect-busboy": "*"
+    "connect-busboy": "*",
+    "express-slash": "*"
   }
 }
