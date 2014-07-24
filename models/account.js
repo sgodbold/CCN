@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var plm = require('passport-local-mongoose');
+var pbkdf2 = require('crypto').pbkdf2;
 
 var db = mongoose.createConnection('mongodb://localhost/users');
 

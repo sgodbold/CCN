@@ -24,6 +24,7 @@ var mongo = require('mongodb');
 //var db = monk('localhost:27017');
 
 var routes = require('./routes/index');
+var chatRoutes = require('./routes/chat');
 //var users = require('./routes/users');
 
 var app = express();
@@ -70,7 +71,19 @@ app.use(express.static(path.join(__dirname, 'public')));//app.use('public/css', 
 //app.use('/main/',express.static(__dirname+'/public'));
 
 
-passport.use(new LocalStrategy(Account.authenticate()));
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    Account.findOne({ username: username }, function(err, user) {
+      if(err) return done(err);
+      if(!user) return done(null, false, { message: 'Incorrect username.' });
+      if(!user.validPassword(password)) {
+        return done(null, false, { message: 'Incorrect password.' });
+      }
+      return done(null, user);
+    });
+  }
+));
+
 passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
@@ -83,6 +96,7 @@ app.use(function(req, res, next) {
    else
        next();
 });
+
 /*
 app.use(function(req,res,next){
     req.db = db;
@@ -90,6 +104,7 @@ app.use(function(req,res,next){
 });*/
 
 app.use('/', routes);
+app.use('/chat', chatRoutes);
 //app.use('/community', routes);
 
 //app.use('/users', users);
